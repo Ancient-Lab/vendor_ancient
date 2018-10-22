@@ -21,6 +21,7 @@ ANCIENT_TARGET_PACKAGE := $(PRODUCT_OUT)/$(ANCIENT_VERSION).zip
 bacon: $(INTERNAL_OTA_PACKAGE_TARGET)
 	$(hide) mv $(INTERNAL_OTA_PACKAGE_TARGET) $(ANCIENT_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(ANCIENT_TARGET_PACKAGE) | sed "s|$(PRODUCT_OUT)/||" > $(ANCIENT_TARGET_PACKAGE).md5sum
+	$(hide) ./vendor/ancient/tools/generate_json_build_info.sh $(ANCIENT_TARGET_PACKAGE)
 	@echo -e ""
 	@echo -e "${cya}Building ${bldcya}Ancient ${txtrst}";
 	@echo -e ""
