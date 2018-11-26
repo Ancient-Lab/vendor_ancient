@@ -135,6 +135,10 @@ DEVICE_PACKAGE_OVERLAYS += vendor/ion/overlay/common
 PRODUCT_PACKAGES += \
     WeatherProvider
 
+#SubsKey
+PRODUCT_PACKAGES += \
+    SubstratumSignature
+
 # Branding
 include vendor/ion/config/branding.mk
 
