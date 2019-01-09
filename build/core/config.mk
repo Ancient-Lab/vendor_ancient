@@ -1,5 +1,6 @@
 # Copyright (C) 2015 The CyanogenMod Project
 #           (C) 2017-2018 The LineageOS Project
+#           (C) 2019 The ion-OS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LINEAGE_SRC_API_DIR := $(TOPDIR)prebuilts/lineage-sdk/api
-INTERNAL_LINEAGE_PLATFORM_API_FILE := $(TARGET_OUT_COMMON_INTERMEDIATES)/PACKAGING/lineage_public_api.txt
-INTERNAL_LINEAGE_PLATFORM_REMOVED_API_FILE := $(TARGET_OUT_COMMON_INTERMEDIATES)/PACKAGING/lineage_removed.txt
-FRAMEWORK_LINEAGE_PLATFORM_API_FILE := $(TOPDIR)lineage-sdk/api/lineage_current.txt
-FRAMEWORK_LINEAGE_PLATFORM_REMOVED_API_FILE := $(TOPDIR)lineage-sdk/api/lineage_removed.txt
-FRAMEWORK_LINEAGE_API_NEEDS_UPDATE_TEXT := $(TOPDIR)vendor/lineage/build/core/apicheck_msg_current.txt
-
-BUILD_RRO_SYSTEM_PACKAGE := $(TOPDIR)vendor/lineage/build/core/system_rro.mk
+BUILD_RRO_SYSTEM_PACKAGE := $(TOPDIR)vendor/ion/build/core/system_rro.mk
 
 # We modify several neverallows, so let the build proceed
 ifneq ($(TARGET_BUILD_VARIANT),user)
@@ -28,7 +22,7 @@ SELINUX_IGNORE_NEVERALLOWS := true
 endif
 
 # Rules for MTK targets
-include $(TOPDIR)vendor/lineage/build/core/mtk_target.mk
+include $(TOPDIR)vendor/ion/build/core/mtk_target.mk
 
 # Rules for QCOM targets
-include $(TOPDIR)vendor/lineage/build/core/qcom_target.mk
+include $(TOPDIR)vendor/ion/build/core/qcom_target.mk

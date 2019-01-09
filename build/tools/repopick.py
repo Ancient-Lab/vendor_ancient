@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2013-15 The CyanogenMod Project
 #           (C) 2017    The LineageOS Project
+#           (C) 2019    The ion-OS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -147,12 +148,12 @@ def fetch_query(remote_url, query):
         raise Exception('Gerrit URL should be in the form http[s]://hostname/ or ssh://[user@]host[:port]')
 
 if __name__ == '__main__':
-    # Default to LineageOS Gerrit
-    default_gerrit = 'https://review.lineageos.org'
+    # Default to PixelExperience Gerrit
+    default_gerrit = 'https://gerrit.pixelexperience.org'
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=textwrap.dedent('''\
         repopick.py is a utility to simplify the process of cherry picking
-        patches from LineageOS's Gerrit instance (or any gerrit instance of your choosing)
+        patches from PixelExperience's Gerrit instance (or any gerrit instance of your choosing)
 
         Given a list of change numbers, repopick will cd into the project path
         and cherry pick the latest patch available.
@@ -257,6 +258,8 @@ if __name__ == '__main__':
         if not name in project_name_to_data:
             project_name_to_data[name] = {}
         revision = revision.split('refs/heads/')[-1]
+        if path is None:
+            path = name
         project_name_to_data[name][revision] = path
 
     # get data on requested changes
@@ -363,6 +366,8 @@ if __name__ == '__main__':
         elif args.ignore_missing:
             print('WARNING: Skipping {0} since there is no project directory for: {1}\n'.format(item['id'], item['project']))
             continue
+        elif item['project'] == 'manifest':
+            project_path = '.repo/manifests'
         else:
             sys.stderr.write('ERROR: For {0}, could not determine the project path for project {1}\n'.format(item['id'], item['project']))
             sys.exit(1)
@@ -407,45 +412,22 @@ if __name__ == '__main__':
         else:
             method = 'ssh'
 
-        # Try fetching from GitHub first if using default gerrit
-        if args.gerrit == default_gerrit:
-            if args.verbose:
-                print('Trying to fetch the change from GitHub')
+        if args.verbose:
+            print('Fetching from {0}'.format(args.gerrit))
 
-            if args.pull:
-                cmd = ['git pull --no-edit github', item['fetch'][method]['ref']]
-            else:
-                cmd = ['git fetch github', item['fetch'][method]['ref']]
-            if args.quiet:
-                cmd.append('--quiet')
-            else:
-                print(cmd)
-            result = subprocess.call([' '.join(cmd)], cwd=project_path, shell=True)
-            FETCH_HEAD = '{0}/.git/FETCH_HEAD'.format(project_path)
-            if result != 0 and os.stat(FETCH_HEAD).st_size != 0:
-                print('ERROR: git command failed')
-                sys.exit(result)
-        # Check if it worked
-        if args.gerrit != default_gerrit or os.stat(FETCH_HEAD).st_size == 0:
-            # If not using the default gerrit or github failed, fetch from gerrit.
-            if args.verbose:
-                if args.gerrit == default_gerrit:
-                    print('Fetching from GitHub didn\'t work, trying to fetch the change from Gerrit')
-                else:
-                    print('Fetching from {0}'.format(args.gerrit))
+        if args.pull:
+            cmd = ['git pull --no-edit', item['fetch'][method]['url'], item['fetch'][method]['ref']]
+        else:
+            cmd = ['git fetch', item['fetch'][method]['url'], item['fetch'][method]['ref']]
+        if args.quiet:
+            cmd.append('--quiet')
+        else:
+            print(cmd)
+        result = subprocess.call([' '.join(cmd)], cwd=project_path, shell=True)
+        if result != 0:
+            print('ERROR: git command failed')
+            sys.exit(result)
 
-            if args.pull:
-                cmd = ['git pull --no-edit', item['fetch'][method]['url'], item['fetch'][method]['ref']]
-            else:
-                cmd = ['git fetch', item['fetch'][method]['url'], item['fetch'][method]['ref']]
-            if args.quiet:
-                cmd.append('--quiet')
-            else:
-                print(cmd)
-            result = subprocess.call([' '.join(cmd)], cwd=project_path, shell=True)
-            if result != 0:
-                print('ERROR: git command failed')
-                sys.exit(result)
         # Perform the cherry-pick
         if not args.pull:
             cmd = ['git cherry-pick --ff FETCH_HEAD']
