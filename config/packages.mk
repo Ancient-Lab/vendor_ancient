@@ -15,4 +15,5 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     Recorder \
     CustomDoze \
-    Longshot
+    Longshot \
+    OmniStyle
