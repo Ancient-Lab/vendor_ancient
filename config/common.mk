@@ -45,6 +45,10 @@ endif
 PRODUCT_PACKAGES += \
     AmbientPlayHistoryProvider
 
+# THermal Controller
+PRODUCT_PACKAGES += \
+    ThermalController
+
 # Backup Tool
 PRODUCT_COPY_FILES += \
     vendor/ion/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
