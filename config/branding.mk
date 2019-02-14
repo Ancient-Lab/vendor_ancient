@@ -1,7 +1,7 @@
 # Set all versions
-ION_BUILD_TYPE ?= UNOFFICIAL
 ION_BUILD_DATE := $(shell date -u +%Y%m%d-%H%M)
 ION_PLATFORM_VERSION := 9.0
+IONIZER := 1.0.a
 
 TARGET_PRODUCT_SHORT := $(subst ion_,,$(ION_BUILD))
 
@@ -13,8 +13,19 @@ ION_VERSION := ion-OS_$(ION_BUILD)-$(ION_PLATFORM_VERSION)-$(ION_BUILD_DATE)-$(I
 ION_FINGERPRINT := ion-OS/$(ION_PLATFORM_VERSION)/$(TARGET_PRODUCT_SHORT)/$(ION_BUILD_DATE)
 endif
 
+ifeq ($(ION_BUILD_TYPE), OFFICIAL)
+ION_BUILD_TYPE := Release
+endif
+
+ifeq ($(ION_BUILD_TYPE), PREVIEW)
+ION_BUILD_TYPE := Preview-Release
+endif
+
+ION_BUILD_TYPE ?= UNOFFICIAL
+
 ION_PROPERTIES := \
     ro.ion.version=$(ION_VERSION) \
     ro.ion.build_date=$(ION_BUILD_DATE) \
     ro.ion.build_type=$(ION_BUILD_TYPE) \
-    ro.ion.fingerprint=$(ION_FINGERPRINT)
+    ro.ion.fingerprint=$(ION_FINGERPRINT) \
+    ro.ionizer=$(IONIZER)
