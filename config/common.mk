@@ -151,7 +151,7 @@ include vendor/ion/config/ota.mk
 # Google
 include vendor/google/config.mk
 
-# Themes
-#include vendor/themes/config.mk
+# Overlays
+include vendor/overlays/config.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
