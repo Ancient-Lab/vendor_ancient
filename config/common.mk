@@ -45,10 +45,6 @@ endif
 PRODUCT_PACKAGES += \
     AmbientPlayHistoryProvider
 
-# THermal Controller
-PRODUCT_PACKAGES += \
-    ThermalController
-
 # Backup Tool
 PRODUCT_COPY_FILES += \
     vendor/ion/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
@@ -142,6 +138,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     org.pixelexperience.keydisabler
 
+# Weather
+PRODUCT_PACKAGES += \
+    WeatherProvider
+
 # Branding
 include vendor/ion/config/branding.mk
 
@@ -149,7 +149,7 @@ include vendor/ion/config/branding.mk
 include vendor/ion/config/ota.mk
 
 # Google
-include vendor/google/config.mk
+include vendor/google/ion/config.mk
 
 # Overlays
 include vendor/overlays/config.mk

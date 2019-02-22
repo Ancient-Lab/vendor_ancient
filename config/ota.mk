@@ -1,5 +1,5 @@
 ifneq ($(IS_GENERIC_SYSTEM_IMAGE), true)
-ifeq ($(ION_BUILD_TYPE), OFFICIAL)
+ifeq ($(ION_BUILD_TYPE), Release)
 
 ifeq ($(IS_GO_VERSION), true)
 ION_OTA_VERSION_CODE := pie_go
@@ -14,7 +14,7 @@ PRODUCT_PACKAGES += \
     Updates
 
 PRODUCT_COPY_FILES += \
-    vendor/ion/config/permissions/org.pixelexperience.ota.xml:system/etc/permissions/org.pixelexperience.ota.xml
+    vendor/ion/config/permissions/com.ion.ota.xml:system/etc/permissions/com.ion.ota.xml
 
 endif
 endif
