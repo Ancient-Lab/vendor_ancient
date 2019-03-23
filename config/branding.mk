@@ -2,7 +2,7 @@
 ION_BUILD_TYPE ?= UNOFFICIAL
 ION_BUILD_DATE := $(shell date -u +%Y%m%d-%H%M)
 ION_PLATFORM_VERSION := 9.0
-IONIZER := 1.0.c
+IONIZER := 1.0.d
 
 TARGET_PRODUCT_SHORT := $(subst ion_,,$(ION_BUILD))
 
