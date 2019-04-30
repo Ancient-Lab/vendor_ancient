@@ -8,6 +8,5 @@ var IonConfig = struct {
 }{
 	// JavaSourceOverlayModuleWhitelist
 	[]string{
-		"org.pixelexperience.keydisabler",
 	},
 }
