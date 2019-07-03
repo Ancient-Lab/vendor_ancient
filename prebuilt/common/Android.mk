@@ -4,6 +4,7 @@ LOCAL_PATH := $(call my-dir)
 # Copies the APN list file into system/etc for the product as apns-conf.xml.
 # In the case where $(CUSTOM_APNS_FILE) is defined, the content of $(CUSTOM_APNS_FILE)
 # is added or replaced to the $(DEFAULT_APNS_FILE).
+include $(call all-subdir-makefiles)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := apns-conf.xml
