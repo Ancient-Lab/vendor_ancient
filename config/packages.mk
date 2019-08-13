@@ -14,4 +14,5 @@ PRODUCT_PACKAGES += \
 # Packages
 PRODUCT_PACKAGES += \
     Recorder \
-    CustomDoze
+    CustomDoze \
+    Longshot
