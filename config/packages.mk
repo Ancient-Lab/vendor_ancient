@@ -10,3 +10,7 @@ PRODUCT_PACKAGES += \
 # Sqlite
 PRODUCT_PACKAGES += \
     sqlite3
+
+# Packages
+PRODUCT_PACKAGES += \
+    Recorder
