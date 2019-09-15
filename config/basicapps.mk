@@ -5,3 +5,7 @@ PRODUCT_PACKAGES += \
     Contacts \
     Dialer \
     LatinIME
+
+# Extra packages
+PRODUCT_PACKAGES += \
+    libjni_latinimegoogle
