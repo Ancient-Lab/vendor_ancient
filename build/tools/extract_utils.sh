@@ -86,6 +86,7 @@ function setup_vendor() {
 
     export PRODUCTMK="$ION_ROOT"/"$OUTDIR"/"$VNDNAME"-vendor.mk
     export ANDROIDMK="$ION_ROOT"/"$OUTDIR"/Android.mk
+    export ANDROIDBP="$ION_ROOT"/"$OUTDIR"/Android.bp
     export BOARDMK="$ION_ROOT"/"$OUTDIR"/BoardConfigVendor.mk
 
     if [ "$4" == "true" ] || [ "$4" == "1" ]; then
@@ -280,6 +281,10 @@ function write_product_copy_files() {
                 local OUTTARGET=$(truncate_file $TARGET)
                 printf '    %s/proprietary/%s:$(TARGET_COPY_OUT_VENDOR)/%s%s\n' \
                     "$OUTDIR" "$TARGET" "$OUTTARGET" "$LINEEND" >> "$PRODUCTMK"
+            elif prefix_match_file "product/" $TARGET ; then
+                local OUTTARGET=$(truncate_file $TARGET)
+                printf '    %s/proprietary/%s:$(TARGET_COPY_OUT_PRODUCT)/%s%s\n' \
+                    "$OUTDIR" "$TARGET" "$OUTTARGET" "$LINEEND" >> "$PRODUCTMK"
             else
                 printf '    %s/proprietary/%s:system/%s%s\n' \
                     "$OUTDIR" "$TARGET" "$TARGET" "$LINEEND" >> "$PRODUCTMK"
@@ -296,7 +301,7 @@ function write_product_copy_files() {
 # write_packages:
 #
 # $1: The LOCAL_MODULE_CLASS for the given module list
-# $2: "true" if this package is part of the vendor/ path
+# $2: /product or /vendor partition
 # $3: type-specific extra flags
 # $4: Name of the array holding the target list
 #
@@ -307,7 +312,7 @@ function write_product_copy_files() {
 function write_packages() {
 
     local CLASS="$1"
-    local VENDOR_PKG="$2"
+    local PARTITION="$2"
     local EXTRA="$3"
 
     # Yes, this is a horrible hack - we create a new array using indirection
@@ -334,8 +339,10 @@ function write_packages() {
         PACKAGE_LIST+=("$PKGNAME")
 
         SRC="proprietary"
-        if [ "$VENDOR_PKG" = "true" ]; then
+        if [ "$PARTITION" = "vendor" ]; then
             SRC+="/vendor"
+        elif [ "$PARTITION" = "product" ]; then
+            SRC+="/product"
         fi
 
         printf 'include $(CLEAR_VARS)\n'
@@ -413,10 +420,65 @@ function write_packages() {
         if [ "$EXTRA" = "priv-app" ]; then
             printf 'LOCAL_PRIVILEGED_MODULE := true\n'
         fi
-        if [ "$VENDOR_PKG" = "true" ]; then
+        if [ "$PARTITION" = "vendor" ]; then
             printf 'LOCAL_VENDOR_MODULE := true\n'
+        elif [ "$PARTITION" = "product" ]; then
+            printf 'LOCAL_PRODUCT_MODULE := true\n'
         fi
         printf 'include $(BUILD_PREBUILT)\n\n'
+    done
+}
+#
+# write_framework:
+#
+# $1: "true" if this package is part of the vendor/ path
+# $2: Name of the array holding the target list
+#
+# Internal function which setup framework files using blueprints
+# for all modules in the list. This is called by write_product_packages
+# after the modules are categorized.
+#
+function write_framework() {
+
+    local PARTITION="$1"
+
+    # Yes, this is a horrible hack - we create a new array using indirection
+    local ARR_NAME="$2[@]"
+    local FILELIST=("${!ARR_NAME}")
+
+    local FILE=
+    local BASENAME=
+    local PKGNAME=
+    local SRC=
+
+    for P in "${FILELIST[@]}"; do
+        FILE=$(target_file "$P")
+
+        BASENAME=$(basename "$FILE")
+        PKGNAME=${BASENAME%.*}
+
+        # Add to final package list
+        PACKAGE_LIST+=("$PKGNAME")
+
+        SRC="proprietary"
+        if [ "$PARTITION" = "vendor" ]; then
+            SRC+="/vendor"
+        elif [ "$PARTITION" = "product" ]; then
+            SRC+="/product"
+        fi
+
+        printf 'soong_namespace {\n'
+        printf '}\n\n'
+        printf 'dex_import {\n'
+        printf '    name: "%s",\n' "$PKGNAME"
+        printf '    owner: "%s",\n' "$VENDOR"
+        printf '    jars: ["%s/framework/%s"],\n' "$SRC" "$FILE"
+        if [ "$PARTITION" = "vendor" ]; then
+            printf '    vendor: true,\n'
+        elif [ "$PARTITION" = "product" ]; then
+            printf '    product_specific: true,\n'
+        fi
+        printf '}\n\n'
     done
 }
 
@@ -446,13 +508,13 @@ function write_product_packages() {
     local LIB64=( $(comm -23 <(printf '%s\n' "${T_LIB64[@]}") <(printf '%s\n' "${MULTILIBS[@]}")) )
 
     if [ "${#MULTILIBS[@]}" -gt "0" ]; then
-        write_packages "SHARED_LIBRARIES" "false" "both" "MULTILIBS" >> "$ANDROIDMK"
+        write_packages "SHARED_LIBRARIES" "" "both" "MULTILIBS" >> "$ANDROIDMK"
     fi
     if [ "${#LIB32[@]}" -gt "0" ]; then
-        write_packages "SHARED_LIBRARIES" "false" "32" "LIB32" >> "$ANDROIDMK"
+        write_packages "SHARED_LIBRARIES" "" "32" "LIB32" >> "$ANDROIDMK"
     fi
     if [ "${#LIB64[@]}" -gt "0" ]; then
-        write_packages "SHARED_LIBRARIES" "false" "64" "LIB64" >> "$ANDROIDMK"
+        write_packages "SHARED_LIBRARIES" "" "64" "LIB64" >> "$ANDROIDMK"
     fi
 
     local T_V_LIB32=( $(prefix_match "vendor/lib/") )
@@ -462,65 +524,101 @@ function write_product_packages() {
     local V_LIB64=( $(comm -23 <(printf '%s\n' "${T_V_LIB64[@]}") <(printf '%s\n' "${V_MULTILIBS[@]}")) )
 
     if [ "${#V_MULTILIBS[@]}" -gt "0" ]; then
-        write_packages "SHARED_LIBRARIES" "true" "both" "V_MULTILIBS" >> "$ANDROIDMK"
+        write_packages "SHARED_LIBRARIES" "vendor" "both" "V_MULTILIBS" >> "$ANDROIDMK"
     fi
     if [ "${#V_LIB32[@]}" -gt "0" ]; then
-        write_packages "SHARED_LIBRARIES" "true" "32" "V_LIB32" >> "$ANDROIDMK"
+        write_packages "SHARED_LIBRARIES" "vendor" "32" "V_LIB32" >> "$ANDROIDMK"
     fi
     if [ "${#V_LIB64[@]}" -gt "0" ]; then
-        write_packages "SHARED_LIBRARIES" "true" "64" "V_LIB64" >> "$ANDROIDMK"
+        write_packages "SHARED_LIBRARIES" "vendor" "64" "V_LIB64" >> "$ANDROIDMK"
+    fi
+
+    local T_P_LIB32=( $(prefix_match "product/lib/") )
+    local T_P_LIB64=( $(prefix_match "product/lib64/") )
+    local P_MULTILIBS=( $(comm -12 <(printf '%s\n' "${T_P_LIB32[@]}") <(printf '%s\n' "${T_P_LIB64[@]}")) )
+    local P_LIB32=( $(comm -23 <(printf '%s\n' "${T_P_LIB32[@]}") <(printf '%s\n' "${P_MULTILIBS[@]}")) )
+    local P_LIB64=( $(comm -23 <(printf '%s\n' "${T_P_LIB64[@]}") <(printf '%s\n' "${P_MULTILIBS[@]}")) )
+
+    if [ "${#P_MULTILIBS[@]}" -gt "0" ]; then
+        write_packages "SHARED_LIBRARIES" "product" "both" "P_MULTILIBS" >> "$ANDROIDMK"
+    fi
+    if [ "${#P_LIB32[@]}" -gt "0" ]; then
+        write_packages "SHARED_LIBRARIES" "product" "32" "P_LIB32" >> "$ANDROIDMK"
+    fi
+    if [ "${#P_LIB64[@]}" -gt "0" ]; then
+        write_packages "SHARED_LIBRARIES" "product" "64" "P_LIB64" >> "$ANDROIDMK"
     fi
 
     # Apps
     local APPS=( $(prefix_match "app/") )
     if [ "${#APPS[@]}" -gt "0" ]; then
-        write_packages "APPS" "false" "" "APPS" >> "$ANDROIDMK"
+        write_packages "APPS" "" "" "APPS" >> "$ANDROIDMK"
     fi
     local PRIV_APPS=( $(prefix_match "priv-app/") )
     if [ "${#PRIV_APPS[@]}" -gt "0" ]; then
-        write_packages "APPS" "false" "priv-app" "PRIV_APPS" >> "$ANDROIDMK"
+        write_packages "APPS" "" "priv-app" "PRIV_APPS" >> "$ANDROIDMK"
     fi
     local V_APPS=( $(prefix_match "vendor/app/") )
     if [ "${#V_APPS[@]}" -gt "0" ]; then
-        write_packages "APPS" "true" "" "V_APPS" >> "$ANDROIDMK"
+        write_packages "APPS" "vendor" "" "V_APPS" >> "$ANDROIDMK"
     fi
     local V_PRIV_APPS=( $(prefix_match "vendor/priv-app/") )
     if [ "${#V_PRIV_APPS[@]}" -gt "0" ]; then
-        write_packages "APPS" "true" "priv-app" "V_PRIV_APPS" >> "$ANDROIDMK"
+        write_packages "APPS" "vendor" "priv-app" "V_PRIV_APPS" >> "$ANDROIDMK"
+    fi
+    local P_APPS=( $(prefix_match "product/app/") )
+    if [ "${#P_APPS[@]}" -gt "0" ]; then
+        write_packages "APPS" "product" "" "P_APPS" >> "$ANDROIDMK"
+    fi
+    local P_PRIV_APPS=( $(prefix_match "product/priv-app/") )
+    if [ "${#P_PRIV_APPS[@]}" -gt "0" ]; then
+        write_packages "APPS" "product" "priv-app" "P_PRIV_APPS" >> "$ANDROIDMK"
     fi
 
     # Framework
     local FRAMEWORK=( $(prefix_match "framework/") )
     if [ "${#FRAMEWORK[@]}" -gt "0" ]; then
-        write_packages "JAVA_LIBRARIES" "false" "" "FRAMEWORK" >> "$ANDROIDMK"
+        write_framework "" "FRAMEWORK" >> "$ANDROIDBP"
     fi
     local V_FRAMEWORK=( $(prefix_match "vendor/framework/") )
     if [ "${#V_FRAMEWORK[@]}" -gt "0" ]; then
-        write_packages "JAVA_LIBRARIES" "true" "" "V_FRAMEWORK" >> "$ANDROIDMK"
+        write_framework "vendor" "V_FRAMEWORK" >> "$ANDROIDBP"
+    fi
+    local P_FRAMEWORK=( $(prefix_match "product/framework/") )
+    if [ "${#P_FRAMEWORK[@]}" -gt "0" ]; then
+        write_framework "product" "P_FRAMEWORK" >> "$ANDROIDBP"
     fi
 
     # Etc
     local ETC=( $(prefix_match "etc/") )
     if [ "${#ETC[@]}" -gt "0" ]; then
-        write_packages "ETC" "false" "" "ETC" >> "$ANDROIDMK"
+        write_packages "ETC" "" "" "ETC" >> "$ANDROIDMK"
     fi
     local V_ETC=( $(prefix_match "vendor/etc/") )
     if [ "${#V_ETC[@]}" -gt "0" ]; then
-        write_packages "ETC" "true" "" "V_ETC" >> "$ANDROIDMK"
+        write_packages "ETC" "vendor" "" "V_ETC" >> "$ANDROIDMK"
+    fi
+    local P_ETC=( $(prefix_match "product/etc/") )
+    if [ "${#P_ETC[@]}" -gt "0" ]; then
+        write_packages "ETC" "product" "" "P_ETC" >> "$ANDROIDMK"
     fi
 
     # Executables
     local BIN=( $(prefix_match "bin/") )
     if [ "${#BIN[@]}" -gt "0"  ]; then
-        write_packages "EXECUTABLES" "false" "" "BIN" >> "$ANDROIDMK"
+        write_packages "EXECUTABLES" "" "" "BIN" >> "$ANDROIDMK"
     fi
     local V_BIN=( $(prefix_match "vendor/bin/") )
     if [ "${#V_BIN[@]}" -gt "0" ]; then
-        write_packages "EXECUTABLES" "true" "" "V_BIN" >> "$ANDROIDMK"
+        write_packages "EXECUTABLES" "vendor" "" "V_BIN" >> "$ANDROIDMK"
+    fi
+    local P_BIN=( $(prefix_match "product/bin/") )
+    if [ "${#P_BIN[@]}" -gt "0" ]; then
+        write_packages "EXECUTABLES" "product" "" "P_BIN" >> "$ANDROIDMK"
     fi
     local SBIN=( $(prefix_match "sbin/") )
     if [ "${#SBIN[@]}" -gt "0" ]; then
-        write_packages "EXECUTABLES" "false" "sbin" "SBIN" >> "$ANDROIDMK"
+        write_packages "EXECUTABLES" "" "sbin" "SBIN" >> "$ANDROIDMK"
     fi
 
 
@@ -530,6 +628,10 @@ function write_product_packages() {
     if [ "$PACKAGE_COUNT" -eq "0" ]; then
         return 0
     fi
+
+    # Soong namespace
+    printf "\n\nPRODUCT_SOONG_NAMESPACES += \\" >> "$PRODUCTMK"
+    printf '\n    %s\n' "${OUTDIR}"  >> "$PRODUCTMK"
 
     printf '\n%s\n' "PRODUCT_PACKAGES += \\" >> "$PRODUCTMK"
     for (( i=1; i<PACKAGE_COUNT+1; i++ )); do
@@ -545,6 +647,7 @@ function write_product_packages() {
 # write_header:
 #
 # $1: file which will be written to
+# $2: line comment prefix
 #
 # writes out the copyright header with the current year.
 # note that this is not an append operation, and should
@@ -555,6 +658,13 @@ function write_header() {
         rm $1
     fi
 
+    if [ -z "$2" ]
+    then
+        local COMMENT_PREFIX="#"
+    else
+        local COMMENT_PREFIX="$2"
+    fi
+
     YEAR=$(date +"%Y")
 
     [ "$COMMON" -eq 1 ] && local DEVICE="$DEVICE_COMMON"
@@ -562,43 +672,43 @@ function write_header() {
     NUM_REGEX='^[0-9]+$'
     if [[ $INITIAL_COPYRIGHT_YEAR =~ $NUM_REGEX ]] && [ $INITIAL_COPYRIGHT_YEAR -le $YEAR ]; then
         if [ $INITIAL_COPYRIGHT_YEAR -lt 2016 ]; then
-            printf "# Copyright (C) $INITIAL_COPYRIGHT_YEAR-2016 The CyanogenMod Project\n" > $1
+            printf "$COMMENT_PREFIX Copyright (C) $INITIAL_COPYRIGHT_YEAR-2016 The CyanogenMod Project\n" > $1
         elif [ $INITIAL_COPYRIGHT_YEAR -eq 2016 ]; then
-            printf "# Copyright (C) 2016 The CyanogenMod Project\n" > $1
+            printf "$COMMENT_PREFIX Copyright (C) 2016 The CyanogenMod Project\n" > $1
         fi
         if [ $YEAR -eq 2017 ]; then
-            printf "# Copyright (C) 2017 The LineageOS Project\n" >> $1
-            printf "# Copyright (C) 2017 The ion-OS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) 2017 The LineageOS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) 2019 The ion-OS Project\n" >> $1
         elif [ $INITIAL_COPYRIGHT_YEAR -eq $YEAR ]; then
-            printf "# Copyright (C) $YEAR The LineageOS Project\n" >> $1
-            printf "# Copyright (C) $YEAR The ion-OS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) $YEAR The LineageOS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) $YEAR The ion-OS Project\n" >> $1
         elif [ $INITIAL_COPYRIGHT_YEAR -le 2017 ]; then
-            printf "# Copyright (C) 2017-$YEAR The LineageOS Project\n" >> $1
-            printf "# Copyright (C) 2017-$YEAR The ion-OS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) 2017-$YEAR The LineageOS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) 2019-$YEAR The ion-OS Project\n" >> $1
         else
-            printf "# Copyright (C) $INITIAL_COPYRIGHT_YEAR-$YEAR The LineageOS Project\n" >> $1
-            printf "# Copyright (C) $INITIAL_COPYRIGHT_YEAR-$YEAR The ion-OS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) $INITIAL_COPYRIGHT_YEAR-$YEAR The LineageOS Project\n" >> $1
+            printf "$COMMENT_PREFIX Copyright (C) $INITIAL_COPYRIGHT_YEAR-$YEAR The ion-OS Project\n" >> $1
         fi
     else
-        printf "# Copyright (C) $YEAR The LineageOS Project\n" > $1
-        printf "# Copyright (C) $YEAR The ion-OS Project\n" > $1
+        printf "$COMMENT_PREFIX Copyright (C) $YEAR The LineageOS Project\n" > $1
+        printf "$COMMENT_PREFIX Copyright (C) $YEAR The ion-OS Project\n" > $1
     fi
 
     cat << EOF >> $1
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+$COMMENT_PREFIX
+$COMMENT_PREFIX Licensed under the Apache License, Version 2.0 (the "License");
+$COMMENT_PREFIX you may not use this file except in compliance with the License.
+$COMMENT_PREFIX You may obtain a copy of the License at
+$COMMENT_PREFIX
+$COMMENT_PREFIX http://www.apache.org/licenses/LICENSE-2.0
+$COMMENT_PREFIX
+$COMMENT_PREFIX Unless required by applicable law or agreed to in writing, software
+$COMMENT_PREFIX distributed under the License is distributed on an "AS IS" BASIS,
+$COMMENT_PREFIX WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+$COMMENT_PREFIX See the License for the specific language governing permissions and
+$COMMENT_PREFIX limitations under the License.
 
-# This file is generated by device/$VENDOR/$DEVICE/setup-makefiles.sh
+$COMMENT_PREFIX This file is generated by device/$VENDOR/$DEVICE/setup-makefiles.sh
 
 EOF
 }
@@ -615,6 +725,7 @@ EOF
 #
 function write_headers() {
     write_header "$ANDROIDMK"
+    write_header "$ANDROIDBP" "//"
 
     GUARD="$2"
     if [ -z "$GUARD" ]; then
@@ -866,13 +977,17 @@ function oat2dex() {
         if get_file "$OAT" "$TMPDIR" "$SRC"; then
             if get_file "$VDEX" "$TMPDIR" "$SRC"; then
                 "$VDEXEXTRACTOR" -o "$TMPDIR/" -i "$TMPDIR/$(basename "$VDEX")" > /dev/null
-                # Check if we have to deal with CompactDex
-                if [ -f "$TMPDIR/$(basename "${OEM_TARGET%.*}")_classes.cdex" ]; then
-                    "$CDEXCONVERTER" "$TMPDIR/$(basename "${OEM_TARGET%.*}")_classes.cdex" &> /dev/null
-                    mv "$TMPDIR/$(basename "${OEM_TARGET%.*}")_classes.cdex.new" "$TMPDIR/classes.dex"
-                else
-                    mv "$TMPDIR/$(basename "${OEM_TARGET%.*}")_classes.dex" "$TMPDIR/classes.dex"
-                fi
+                CLASSES=$(ls "$TMPDIR/$(basename "${OEM_TARGET%.*}")_classes"*)
+                for CLASS in $CLASSES; do
+                    NEWCLASS=$(echo "$CLASS" | sed 's/.*_//;s/cdex/dex/')
+                    # Check if we have to deal with CompactDex
+                    if [[ "$CLASS" == *.cdex ]]; then
+                        "$CDEXCONVERTER" "$CLASS" &>/dev/null
+                        mv "$CLASS.new" "$TMPDIR/$NEWCLASS"
+                    else
+                        mv "$CLASS" "$TMPDIR/$NEWCLASS"
+                    fi
+                done
             else
                 java -jar "$BAKSMALIJAR" deodex -o "$TMPDIR/dexout" -b "$BOOTOAT" -d "$TMPDIR" "$TMPDIR/$(basename "$OAT")"
                 java -jar "$SMALIJAR" assemble "$TMPDIR/dexout" -o "$TMPDIR/classes.dex"
@@ -887,13 +1002,17 @@ function oat2dex() {
             # fallback to boot.oat if vdex is not available
             if get_file "$JARVDEX" "$TMPDIR" "$SRC"; then
                 "$VDEXEXTRACTOR" -o "$TMPDIR/" -i "$TMPDIR/$(basename "$JARVDEX")" > /dev/null
-                # Check if we have to deal with CompactDex
-                if [ -f "$TMPDIR/$(basename "${JARVDEX%.*}")_classes.cdex" ]; then
-                    "$CDEXCONVERTER" "$TMPDIR/$(basename "${JARVDEX%.*}")_classes.cdex" &> /dev/null
-                    mv "$TMPDIR/$(basename "${JARVDEX%.*}")_classes.cdex.new" "$TMPDIR/classes.dex"
-                else
-                    mv "$TMPDIR/$(basename "${JARVDEX%.*}")_classes.dex" "$TMPDIR/classes.dex"
-                fi
+                CLASSES=$(ls "$TMPDIR/$(basename "${JARVDEX%.*}")_classes"*)
+                for CLASS in $CLASSES; do
+                    NEWCLASS=$(echo "$CLASS" | sed 's/.*_//;s/cdex/dex/')
+                    # Check if we have to deal with CompactDex
+                    if [[ "$CLASS" == *.cdex ]]; then
+                        "$CDEXCONVERTER" "$CLASS" &>/dev/null
+                        mv "$CLASS.new" "$TMPDIR/$NEWCLASS"
+                    else
+                        mv "$CLASS" "$TMPDIR/$NEWCLASS"
+                    fi
+                done
             else
                 java -jar "$BAKSMALIJAR" deodex -o "$TMPDIR/dexout" -b "$BOOTOAT" -d "$TMPDIR" "$JAROAT/$OEM_TARGET"
                 java -jar "$SMALIJAR" assemble "$TMPDIR/dexout" -o "$TMPDIR/classes.dex"
@@ -1209,8 +1328,8 @@ function extract() {
         if [[ "$FULLY_DEODEXED" -ne "1" && "${VENDOR_REPO_FILE}" =~ .(apk|jar)$ ]]; then
             oat2dex "${VENDOR_REPO_FILE}" "${SRC_FILE}" "$SRC"
             if [ -f "$TMPDIR/classes.dex" ]; then
-                zip -gjq "${VENDOR_REPO_FILE}" "$TMPDIR/classes.dex"
-                rm "$TMPDIR/classes.dex"
+                zip -gjq "${VENDOR_REPO_FILE}" "$TMPDIR/classes"*
+                rm "$TMPDIR/classes"*
                 printf '    (updated %s from odex files)\n' "${SRC_FILE}"
             fi
         elif [[ "${VENDOR_REPO_FILE}" =~ .xml$ ]]; then

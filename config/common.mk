@@ -41,8 +41,8 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=1
 endif
 
 # Ambient Play
-PRODUCT_PACKAGES += \
-    AmbientPlayHistoryProvider
+#PRODUCT_PACKAGES += \
+#    AmbientPlayHistoryProvider
 
 # Backup Tool
 PRODUCT_COPY_FILES += \
@@ -91,6 +91,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     frameworks/base/data/keyboards/Vendor_045e_Product_028e.kl:system/usr/keylayout/Vendor_045e_Product_0719.kl
 
+# Enforce privapp-permissions whitelist
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    ro.control_privapp_permissions=enforce
+
 # Power whitelist
 PRODUCT_COPY_FILES += \
     vendor/ion/config/permissions/custom-power-whitelist.xml:system/etc/sysconfig/custom-power-whitelist.xml
@@ -131,13 +135,17 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/ion/overlay
 DEVICE_PACKAGE_OVERLAYS += vendor/ion/overlay/common
 
-# Weather
+# PixelSetupWizard overlay
 PRODUCT_PACKAGES += \
-    WeatherProvider
+    PixelSetupWizardOverlay
 
-#SubsKey
+# Themed bootanimation
+TARGET_MISC_BLOCK_OFFSET ?= 0
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    ro.misc.block.offset=$(TARGET_MISC_BLOCK_OFFSET)
 PRODUCT_PACKAGES += \
-    SubstratumSignature
+    misc_writer_system \
+    themed_bootanimation
 
 # Branding
 include vendor/ion/config/branding.mk
@@ -149,7 +157,7 @@ include vendor/ion/config/ota.mk
 include vendor/google/ion/config.mk
 
 # Overlays
-include vendor/overlays/config.mk
+#include vendor/overlays/config.mk
 
 # Fonts
 include vendor/ion/prebuilt/common/fonts/fonts.mk

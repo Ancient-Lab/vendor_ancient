@@ -1,14 +1,10 @@
-ifneq ($(IS_GENERIC_SYSTEM_IMAGE), true)
-ifeq ($(ION_BUILD_TYPE), Release)
+ifeq ($(ION_BUILD_TYPE), OFFICIAL)
 
-ifeq ($(IS_GO_VERSION), true)
-ION_OTA_VERSION_CODE := pie_go
-else
-ION_OTA_VERSION_CODE := pie
-endif
+ION_OTA_VERSION_CODE := ten
 
 CUSTOM_PROPERTIES += \
-    ro.ion.ota.version_code=$(ION_OTA_VERSION_CODE)
+    ro.ion.ota.version_code=$(ION_OTA_VERSION_CODE) \
+    sys.ota.disable_uncrypt=1
 
 PRODUCT_PACKAGES += \
     Updates
@@ -16,5 +12,4 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     vendor/ion/config/permissions/com.ion.ota.xml:system/etc/permissions/com.ion.ota.xml
 
-endif
 endif
