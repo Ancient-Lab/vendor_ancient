@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2016 The CyanogenMod Project
+# Copyright (C) 2017-2019 The LineageOS Project
 # Copyright (C) 2019 The ion-OS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -908,16 +909,16 @@ function oat2dex() {
     local HOST="$(uname)"
 
     if [ -z "$BAKSMALIJAR" ] || [ -z "$SMALIJAR" ]; then
-        export BAKSMALIJAR="$ION_ROOT"/vendor/ion/build/tools/smali/baksmali.jar
-        export SMALIJAR="$ION_ROOT"/vendor/ion/build/tools/smali/smali.jar
+        export BAKSMALIJAR="$ION_ROOT"/prebuilts/tools-ion/common/smali/baksmali.jar
+        export SMALIJAR="$ION_ROOT"/prebuilts/tools-ion/common/smali/smali.jar
     fi
 
     if [ -z "$VDEXEXTRACTOR" ]; then
-        export VDEXEXTRACTOR="$ION_ROOT"/vendor/ion/build/tools/"$HOST"/vdexExtractor
+        export VDEXEXTRACTOR="$ION_ROOT"/prebuilts/tools-ion/"${HOST,,}"-x86/bin/vdexExtractor
     fi
 
     if [ -z "$CDEXCONVERTER" ]; then
-        export CDEXCONVERTER="$ION_ROOT"/vendor/ion/build/tools/"$HOST"/compact_dex_converter
+        export CDEXCONVERTER="$ION_ROOT"/prebuilts/tools-ion/"${HOST,,}"-x86/bin/compact_dex_converter
     fi
 
     # Extract existing boot.oats to the temp folder
