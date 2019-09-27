@@ -109,7 +109,8 @@ PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
 
 # Optional packages
 PRODUCT_PACKAGES += \
-    LiveWallpapersPicker
+    LiveWallpapersPicker \
+    ThemePicker
 
 # Charger
 PRODUCT_PACKAGES += \
