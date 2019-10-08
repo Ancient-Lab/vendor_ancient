@@ -158,7 +158,7 @@ include vendor/ion/config/ota.mk
 include vendor/google/ion/config.mk
 
 # Overlays
-#include vendor/overlays/config.mk
+include vendor/overlays/config.mk
 
 # Fonts
 include vendor/ion/prebuilt/common/fonts/fonts.mk
