@@ -65,16 +65,6 @@ PRODUCT_COPY_FILES += \
     vendor/ion/config/permissions/org.lineageos.snap.xml:system/etc/permissions/org.lineageos.snap.xml \
     vendor/ion/config/permissions/privapp-permissions-custom.xml:system/etc/permissions/privapp-permissions-custom.xml
 
-# init.d support
-PRODUCT_COPY_FILES += \
-    vendor/ion/prebuilt/common/bin/sysinit:system/bin/sysinit
-
-ifneq ($(TARGET_BUILD_VARIANT),user)
-# userinit support
-PRODUCT_COPY_FILES += \
-    vendor/ion/prebuilt/common/etc/init.d/90userinit:system/etc/init.d/90userinit
-endif
-
 # Copy all ion-OS-specific init rc files
 $(foreach f,$(wildcard vendor/ion/prebuilt/common/etc/init/*.rc),\
     $(eval PRODUCT_COPY_FILES += $(f):system/etc/init/$(notdir $f)))
