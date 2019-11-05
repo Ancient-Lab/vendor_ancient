@@ -44,8 +44,8 @@ DEBUG = False
 default_manifest = ".repo/manifest.xml"
 
 custom_local_manifest = ".repo/local_manifests/device.xml"
-custom_default_revision = "ten"
-custom_dependencies = "aosp.dependencies"
+custom_default_revision =  os.getenv('ROOMSERVICE_DEFAULT_BRANCH', 'ten')
+custom_dependencies = "ion.dependencies"
 org_manifest = "device"  # leave empty if org is provided in manifest
 org_display = "ion-OS"  # needed for displaying
 
