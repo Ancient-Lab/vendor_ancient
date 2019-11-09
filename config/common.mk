@@ -98,8 +98,8 @@ PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
 PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
 
 # Optional packages
-PRODUCT_PACKAGES += \
-    ThemePicker
+#PRODUCT_PACKAGES += \
+#    ThemePicker
 
 # Charger
 PRODUCT_PACKAGES += \
