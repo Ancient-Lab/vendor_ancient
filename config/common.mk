@@ -62,8 +62,7 @@ endif
 PRODUCT_COPY_FILES += \
     vendor/ancient/config/permissions/backup.xml:system/etc/sysconfig/backup.xml \
     vendor/ancient/config/permissions/privapp-permissions-aosp.xml:system/etc/permissions/privapp-permissions-aosp.xml \
-    vendor/ancient/config/permissions/org.lineageos.snap.xml:system/etc/permissions/org.lineageos.snap.xml \
-    vendor/ancient/config/permissions/privapp-permissions-custom.xml:system/etc/permissions/privapp-permissions-custom.xml
+    vendor/ancient/config/permissions/org.lineageos.snap.xml:system/etc/permissions/org.lineageos.snap.xml
 
 # Copy all ancient-OS-specific init rc files
 $(foreach f,$(wildcard vendor/ancient/prebuilt/common/etc/init/*.rc),\
