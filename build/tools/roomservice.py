@@ -2,6 +2,7 @@
 # Copyright (C) 2012-2013, The CyanogenMod Project
 #           (C) 2017-,     The LineageOS Project
 #           (C) 2019-,     The ion-OS Project
+#           (C) 2019-,     The ancient-OS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,9 +46,9 @@ default_manifest = ".repo/manifest.xml"
 
 custom_local_manifest = ".repo/local_manifests/device.xml"
 custom_default_revision =  os.getenv('ROOMSERVICE_DEFAULT_BRANCH', 'ten')
-custom_dependencies = "ion.dependencies"
+custom_dependencies = "ancient.dependencies"
 org_manifest = "device"  # leave empty if org is provided in manifest
-org_display = "ion-OS"  # needed for displaying
+org_display = "ancient-OS"  # needed for displaying
 
 github_auth = None
 

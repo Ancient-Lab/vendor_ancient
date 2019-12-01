@@ -1,4 +1,4 @@
-PRODUCT_BRAND ?= ion-OS
+PRODUCT_BRAND ?= Ancient-OS
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
@@ -46,32 +46,32 @@ endif
 
 # Backup Tool
 PRODUCT_COPY_FILES += \
-    vendor/ion/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/ion/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
-    vendor/ion/prebuilt/common/bin/50-base.sh:system/addon.d/50-base.sh \
-    vendor/ion/prebuilt/common/bin/blacklist:system/addon.d/blacklist
+    vendor/ancient/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+    vendor/ancient/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
+    vendor/ancient/prebuilt/common/bin/50-base.sh:system/addon.d/50-base.sh \
+    vendor/ancient/prebuilt/common/bin/blacklist:system/addon.d/blacklist
 
 ifeq ($(AB_OTA_UPDATER),true)
 PRODUCT_COPY_FILES += \
-    vendor/ion/prebuilt/common/bin/backuptool_ab.sh:system/bin/backuptool_ab.sh \
-    vendor/ion/prebuilt/common/bin/backuptool_ab.functions:system/bin/backuptool_ab.functions \
-    vendor/ion/prebuilt/common/bin/backuptool_postinstall.sh:system/bin/backuptool_postinstall.sh
+    vendor/ancient/prebuilt/common/bin/backuptool_ab.sh:system/bin/backuptool_ab.sh \
+    vendor/ancient/prebuilt/common/bin/backuptool_ab.functions:system/bin/backuptool_ab.functions \
+    vendor/ancient/prebuilt/common/bin/backuptool_postinstall.sh:system/bin/backuptool_postinstall.sh
 endif
 
 # Some permissions
 PRODUCT_COPY_FILES += \
-    vendor/ion/config/permissions/backup.xml:system/etc/sysconfig/backup.xml \
-    vendor/ion/config/permissions/privapp-permissions-aosp.xml:system/etc/permissions/privapp-permissions-aosp.xml \
-    vendor/ion/config/permissions/org.lineageos.snap.xml:system/etc/permissions/org.lineageos.snap.xml \
-    vendor/ion/config/permissions/privapp-permissions-custom.xml:system/etc/permissions/privapp-permissions-custom.xml
+    vendor/ancient/config/permissions/backup.xml:system/etc/sysconfig/backup.xml \
+    vendor/ancient/config/permissions/privapp-permissions-aosp.xml:system/etc/permissions/privapp-permissions-aosp.xml \
+    vendor/ancient/config/permissions/org.lineageos.snap.xml:system/etc/permissions/org.lineageos.snap.xml \
+    vendor/ancient/config/permissions/privapp-permissions-custom.xml:system/etc/permissions/privapp-permissions-custom.xml
 
-# Copy all ion-OS-specific init rc files
-$(foreach f,$(wildcard vendor/ion/prebuilt/common/etc/init/*.rc),\
+# Copy all ancient-OS-specific init rc files
+$(foreach f,$(wildcard vendor/ancient/prebuilt/common/etc/init/*.rc),\
     $(eval PRODUCT_COPY_FILES += $(f):system/etc/init/$(notdir $f)))
 
 # Copy over added mimetype supported in libcore.net.MimeUtils
 PRODUCT_COPY_FILES += \
-    vendor/ion/prebuilt/common/lib/content-types.properties:system/lib/content-types.properties
+    vendor/ancient/prebuilt/common/lib/content-types.properties:system/lib/content-types.properties
 
 # Enable SIP+VoIP on all targets
 PRODUCT_COPY_FILES += \
@@ -87,7 +87,7 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 
 # Power whitelist
 PRODUCT_COPY_FILES += \
-    vendor/ion/config/permissions/custom-power-whitelist.xml:system/etc/sysconfig/custom-power-whitelist.xml
+    vendor/ancient/config/permissions/custom-power-whitelist.xml:system/etc/sysconfig/custom-power-whitelist.xml
 
 # Do not include art debug targets
 PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
@@ -122,8 +122,8 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     media.recorder.show_manufacturer_and_model=true
 
-PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/ion/overlay
-DEVICE_PACKAGE_OVERLAYS += vendor/ion/overlay/common
+PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/ancient/overlay
+DEVICE_PACKAGE_OVERLAYS += vendor/ancient/overlay/common
 
 # PixelSetupWizard overlay
 PRODUCT_PACKAGES += \
@@ -139,18 +139,15 @@ PRODUCT_PACKAGES += \
     themed_bootanimation
 
 # Branding
-include vendor/ion/config/branding.mk
+include vendor/ancient/config/branding.mk
 
 # OTA
-include vendor/ion/config/ota.mk
-
-# Google
-include vendor/google/ion/config.mk
+include vendor/ancient/config/ota.mk
 
 # Overlays
 include vendor/overlays/config.mk
 
 # Fonts
-include vendor/ion/prebuilt/common/fonts/fonts.mk
+include vendor/ancient/prebuilt/common/fonts/fonts.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk

@@ -20,5 +20,5 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.config.ringtone=The_big_adventure.ogg,The_big_adventure.ogg
 
-# Inherit full common ion-OS stuff
-$(call inherit-product, vendor/ion/config/common_full.mk)
+# Inherit full common ancient-OS stuff
+$(call inherit-product, vendor/ancient/config/common_full.mk)

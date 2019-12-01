@@ -1,14 +1,14 @@
 bootstrap_go_package {
-    name: "soong-ion",
-    pkgPath: "ion/soong/android",
+    name: "soong-ancient",
+    pkgPath: "ancient/soong/android",
     srcs: [
         "android/variable.go",
     ],
 }
 
 bootstrap_go_package {
-    name: "soong-ion-generator",
-    pkgPath: "ion/soong/generator",
+    name: "soong-ancient-generator",
+    pkgPath: "ancient/soong/generator",
     deps: [
         "blueprint",
         "blueprint-pathtools",
@@ -23,7 +23,7 @@ bootstrap_go_package {
     pluginFor: ["soong_build"],
 }
 
-ion_generator {
+ancient_generator {
     name: "generated_kernel_includes",
 
     // The headers make command

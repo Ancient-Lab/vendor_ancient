@@ -15,7 +15,7 @@
 -->
 
 <permissions>
-    <privapp-permissions package="com.ion.ota">
+    <privapp-permissions package="com.ancient.ota">
         <permission name="android.permission.RECOVERY"/>
         <permission name="android.permission.ACCESS_CACHE_FILESYSTEM"/>
         <permission name="android.permission.REBOOT"/>

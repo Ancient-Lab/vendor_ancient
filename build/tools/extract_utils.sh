@@ -48,7 +48,7 @@ trap cleanup 0
 #
 # $1: device name
 # $2: vendor name
-# $3: ion root directory
+# $3: ancient root directory
 # $4: is common device - optional, default to false
 # $5: cleanup - optional, default to true
 # $6: custom vendor makefile name - optional, default to false
@@ -69,15 +69,15 @@ function setup_vendor() {
         exit 1
     fi
 
-    export ION_ROOT="$3"
-    if [ ! -d "$ION_ROOT" ]; then
-        echo "\$ION_ROOT must be set and valid before including this script!"
+    export ANCIENT_ROOT="$3"
+    if [ ! -d "$ANCIENT_ROOT" ]; then
+        echo "\$ANCIENT_ROOT must be set and valid before including this script!"
         exit 1
     fi
 
     export OUTDIR=vendor/"$VENDOR"/"$DEVICE"
-    if [ ! -d "$ION_ROOT/$OUTDIR" ]; then
-        mkdir -p "$ION_ROOT/$OUTDIR"
+    if [ ! -d "$ANCIENT_ROOT/$OUTDIR" ]; then
+        mkdir -p "$ANCIENT_ROOT/$OUTDIR"
     fi
 
     VNDNAME="$6"
@@ -85,10 +85,10 @@ function setup_vendor() {
         VNDNAME="$DEVICE"
     fi
 
-    export PRODUCTMK="$ION_ROOT"/"$OUTDIR"/"$VNDNAME"-vendor.mk
-    export ANDROIDBP="$ION_ROOT"/"$OUTDIR"/Android.bp
-    export ANDROIDMK="$ION_ROOT"/"$OUTDIR"/Android.mk
-    export BOARDMK="$ION_ROOT"/"$OUTDIR"/BoardConfigVendor.mk
+    export PRODUCTMK="$ANCIENT_ROOT"/"$OUTDIR"/"$VNDNAME"-vendor.mk
+    export ANDROIDBP="$ANCIENT_ROOT"/"$OUTDIR"/Android.bp
+    export ANDROIDMK="$ANCIENT_ROOT"/"$OUTDIR"/Android.mk
+    export BOARDMK="$ANCIENT_ROOT"/"$OUTDIR"/BoardConfigVendor.mk
 
     if [ "$4" == "true" ] || [ "$4" == "1" ]; then
         COMMON=1
@@ -1194,7 +1194,7 @@ function get_file() {
 # Convert apk|jar .odex in the corresposing classes.dex
 #
 function oat2dex() {
-    local ION_TARGET="$1"
+    local ANCIENT_TARGET="$1"
     local OEM_TARGET="$2"
     local SRC="$3"
     local TARGET=
@@ -1202,16 +1202,16 @@ function oat2dex() {
     local HOST="$(uname)"
 
     if [ -z "$BAKSMALIJAR" ] || [ -z "$SMALIJAR" ]; then
-        export BAKSMALIJAR="$ION_ROOT"/prebuilts/tools-ion/common/smali/baksmali.jar
-        export SMALIJAR="$ION_ROOT"/prebuilts/tools-ion/common/smali/smali.jar
+        export BAKSMALIJAR="$ANCIENT_ROOT"/prebuilts/tools-ancient/common/smali/baksmali.jar
+        export SMALIJAR="$ANCIENT_ROOT"/prebuilts/tools-ancient/common/smali/smali.jar
     fi
 
     if [ -z "$VDEXEXTRACTOR" ]; then
-        export VDEXEXTRACTOR="$ION_ROOT"/prebuilts/tools-ion/"${HOST,,}"-x86/bin/vdexExtractor
+        export VDEXEXTRACTOR="$ANCIENT_ROOT"/prebuilts/tools-ancient/"${HOST,,}"-x86/bin/vdexExtractor
     fi
 
     if [ -z "$CDEXCONVERTER" ]; then
-        export CDEXCONVERTER="$ION_ROOT"/prebuilts/tools-ion/"${HOST,,}"-x86/bin/compact_dex_converter
+        export CDEXCONVERTER="$ANCIENT_ROOT"/prebuilts/tools-ancient/"${HOST,,}"-x86/bin/compact_dex_converter
     fi
 
     # Extract existing boot.oats to the temp folder
@@ -1231,11 +1231,11 @@ function oat2dex() {
         FULLY_DEODEXED=1 && return 0 # system is fully deodexed, return
     fi
 
-    if [ ! -f "$ION_TARGET" ]; then
+    if [ ! -f "$ANCIENT_TARGET" ]; then
         return;
     fi
 
-    if grep "classes.dex" "$ION_TARGET" >/dev/null; then
+    if grep "classes.dex" "$ANCIENT_TARGET" >/dev/null; then
         return 0 # target apk|jar is already odexed, return
     fi
 
@@ -1263,7 +1263,7 @@ function oat2dex() {
                 java -jar "$BAKSMALIJAR" deodex -o "$TMPDIR/dexout" -b "$BOOTOAT" -d "$TMPDIR" "$TMPDIR/$(basename "$OAT")"
                 java -jar "$SMALIJAR" assemble "$TMPDIR/dexout" -o "$TMPDIR/classes.dex"
             fi
-        elif [[ "$ION_TARGET" =~ .jar$ ]]; then
+        elif [[ "$ANCIENT_TARGET" =~ .jar$ ]]; then
             JAROAT="$TMPDIR/system/framework/$ARCH/boot-$(basename ${OEM_TARGET%.*}).oat"
             JARVDEX="/system/framework/boot-$(basename ${OEM_TARGET%.*}).vdex"
             if [ ! -f "$JAROAT" ]; then
@@ -1458,7 +1458,7 @@ function extract() {
     local FIXUP_HASHLIST=( ${PRODUCT_COPY_FILES_FIXUP_HASHES[@]} ${PRODUCT_PACKAGES_FIXUP_HASHES[@]} )
     local PRODUCT_COPY_FILES_COUNT=${#PRODUCT_COPY_FILES_LIST[@]}
     local COUNT=${#FILELIST[@]}
-    local OUTPUT_ROOT="$ION_ROOT"/"$OUTDIR"/proprietary
+    local OUTPUT_ROOT="$ANCIENT_ROOT"/"$OUTDIR"/proprietary
     local OUTPUT_TMP="$TMPDIR"/"$OUTDIR"/proprietary
 
     if [ "$SRC" = "adb" ]; then
@@ -1486,7 +1486,7 @@ function extract() {
             # If OTA is block based, extract it.
             elif [ -a "$DUMPDIR"/system.new.dat ]; then
                 echo "Converting system.new.dat to system.img"
-                python "$ION_ROOT"/vendor/ion/build/tools/sdat2img.py "$DUMPDIR"/system.transfer.list "$DUMPDIR"/system.new.dat "$DUMPDIR"/system.img 2>&1
+                python "$ANCIENT_ROOT"/vendor/ion/build/tools/sdat2img.py "$DUMPDIR"/system.transfer.list "$DUMPDIR"/system.new.dat "$DUMPDIR"/system.img 2>&1
                 rm -rf "$DUMPDIR"/system.new.dat "$DUMPDIR"/system
                 mkdir "$DUMPDIR"/system "$DUMPDIR"/tmp
                 echo "Requesting sudo access to mount the system.img"
@@ -1896,7 +1896,7 @@ function extract_firmware() {
     local FILELIST=( ${PRODUCT_COPY_FILES_LIST[@]} )
     local COUNT=${#FILELIST[@]}
     local SRC="$2"
-    local OUTPUT_DIR="$ION_ROOT"/"$OUTDIR"/radio
+    local OUTPUT_DIR="$ANCIENT_ROOT"/"$OUTDIR"/radio
 
     if [ "$VENDOR_RADIO_STATE" -eq "0" ]; then
         echo "Cleaning firmware output directory ($OUTPUT_DIR).."

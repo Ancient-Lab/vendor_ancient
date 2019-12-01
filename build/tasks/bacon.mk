@@ -1,6 +1,7 @@
 # Copyright (C) 2017 Unlegacy-Android
 # Copyright (C) 2017 The LineageOS Project
 # Copyright (C) 2019 The ion-OS Project
+# Copyright (C) 2019 The Ancient-OS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,10 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ION_TARGET_PACKAGE := $(PRODUCT_OUT)/$(ION_VERSION).zip
+ANCIENT_TARGET_PACKAGE := $(PRODUCT_OUT)/$(ANCIENT_VERSION).zip
 
 .PHONY: bacon
 bacon: $(INTERNAL_OTA_PACKAGE_TARGET)
-	$(hide) mv $(INTERNAL_OTA_PACKAGE_TARGET) $(ION_TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(ION_TARGET_PACKAGE) | sed "s|$(PRODUCT_OUT)/||" > $(ION_TARGET_PACKAGE).md5sum
-	@echo "Package Complete: $(ION_TARGET_PACKAGE)" >&2
+	$(hide) mv $(INTERNAL_OTA_PACKAGE_TARGET) $(ANCIENT_TARGET_PACKAGE)
+	$(hide) $(MD5SUM) $(ANCIENT_TARGET_PACKAGE) | sed "s|$(PRODUCT_OUT)/||" > $(ANCIENT_TARGET_PACKAGE).md5sum
+	@echo "Package Complete: $(ANCIENT_TARGET_PACKAGE)" >&2

@@ -6,12 +6,12 @@ import (
 	"android/soong/android"
 )
 
-func ionExpandVariables(ctx android.ModuleContext, in string) string {
-	ionVars := ctx.Config().VendorConfig("ionVarsPlugin")
+func ancientExpandVariables(ctx android.ModuleContext, in string) string {
+	ancientVars := ctx.Config().VendorConfig("ancientVarsPlugin")
 
 	out, err := android.Expand(in, func(name string) (string, error) {
-		if ionVars.IsSet(name) {
-			return ionVars.String(name), nil
+		if ancientVars.IsSet(name) {
+			return ancientVars.String(name), nil
 		}
 		// This variable is not for us, restore what the original
 		// variable string will have looked like for an Expand

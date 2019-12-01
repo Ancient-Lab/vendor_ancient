@@ -28,9 +28,9 @@ INITIAL_COPYRIGHT_YEAR=**** FILL IN COPYRIGHT YEAR ****
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
 
-ION_ROOT="$MY_DIR"/../../..
+ANCIENT_ROOT="$MY_DIR"/../../..
 
-HELPER="$ION_ROOT"/vendor/ion/build/tools/extract_utils.sh
+HELPER="$ANCIENT_ROOT"/vendor/ancient/build/tools/extract_utils.sh
 if [ ! -f "$HELPER" ]; then
     echo "Unable to find helper script at $HELPER"
     exit 1
@@ -38,7 +38,7 @@ fi
 . "$HELPER"
 
 # Initialize the helper
-setup_vendor "$DEVICE" "$VENDOR" "$ION_ROOT"
+setup_vendor "$DEVICE" "$VENDOR" "$ANCIENT_ROOT"
 
 # Copyright headers and guards
 write_headers
