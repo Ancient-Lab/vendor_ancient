@@ -3,8 +3,7 @@ ifeq ($(ANCIENT_BUILD_TYPE), OFFICIAL)
 ANCIENT_OTA_VERSION_CODE := ten
 
 CUSTOM_PROPERTIES += \
-    ro.ancient.ota.version_code=$(ANCIENT_OTA_VERSION_CODE) \
-    sys.ota.disable_uncrypt=1
+    ro.ancient.ota.version_code=$(ANCIENT_OTA_VERSION_CODE)
 
 PRODUCT_PACKAGES += \
     Updates
