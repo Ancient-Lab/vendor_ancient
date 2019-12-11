@@ -147,6 +147,12 @@ include vendor/ancient/config/ota.mk
 # Overlays
 include vendor/overlays/config.mk
 
+# Gapps
+include vendor/gapps/config.mk
+
+# Pixelstyle
+include vendor/pixelstyle/config.mk
+
 # Fonts
 include vendor/ancient/prebuilt/common/fonts/fonts.mk
 
