@@ -131,9 +131,6 @@ PRODUCT_PACKAGES += \
 # Branding
 include vendor/ancient/config/branding.mk
 
-# OTA
-include vendor/ancient/config/ota.mk
-
 # Overlays
 include vendor/overlays/config.mk
 
