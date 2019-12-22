@@ -48,7 +48,7 @@ custom_local_manifest = ".repo/local_manifests/device.xml"
 custom_default_revision =  os.getenv('ROOMSERVICE_DEFAULT_BRANCH', 'ten')
 custom_dependencies = "ancient.dependencies"
 org_manifest = "device"  # leave empty if org is provided in manifest
-org_display = "ancient-OS"  # needed for displaying
+org_display = "ancient-devices"  # needed for displaying
 
 github_auth = None
 
