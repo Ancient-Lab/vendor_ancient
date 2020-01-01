@@ -36,4 +36,10 @@ It allows additional grants on top of privapp-permissions-platform.xml
         <permission name="android.permission.OVERRIDE_WIFI_CONFIG"/>
     </privapp-permissions>
 
+    <privapp-permissions package="com.android.customization">
+        <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+        <permission name="android.permission.SET_WALLPAPER_COMPONENT"/>
+        <permission name="android.permission.CHANGE_OVERLAY_PACKAGES"/>
+    </privapp-permissions>
+
 </permissions>
