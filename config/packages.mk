@@ -18,4 +18,5 @@ PRODUCT_PACKAGES += \
     OmniStyle \
     Launcher3QuickStep \
     AncientWallpaperZone \
-    ThemePicker
+    ThemePicker \
+    TouchGestures
