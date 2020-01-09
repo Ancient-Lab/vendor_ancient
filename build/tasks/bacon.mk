@@ -21,4 +21,21 @@ ANCIENT_TARGET_PACKAGE := $(PRODUCT_OUT)/$(ANCIENT_VERSION).zip
 bacon: $(INTERNAL_OTA_PACKAGE_TARGET)
 	$(hide) mv $(INTERNAL_OTA_PACKAGE_TARGET) $(ANCIENT_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(ANCIENT_TARGET_PACKAGE) | sed "s|$(PRODUCT_OUT)/||" > $(ANCIENT_TARGET_PACKAGE).md5sum
-	@echo "Package Complete: $(ANCIENT_TARGET_PACKAGE)" >&2
+	@echo -e ""
+	@echo -e "${cya}Building ${bldcya}Ancient ${txtrst}";
+	@echo -e ""
+	@echo -e ${CL_GRN}" ▄▄▄       ███▄    █  ▄████▄   ██▓▓█████  ███▄    █ ▄▄▄█████▓ "
+	@echo -e ${CL_GRN}"▒████▄     ██ ▀█   █ ▒██▀ ▀█  ▓██▒▓█   ▀  ██ ▀█   █ ▓  ██▒ ▓▒ "
+	@echo -e ${CL_GRN}"▒██  ▀█▄  ▓██  ▀█ ██▒▒▓█    ▄ ▒██▒▒███   ▓██  ▀█ ██▒▒ ▓██░ ▒░ "
+	@echo -e ${CL_GRN}"░██▄▄▄▄██ ▓██▒  ▐▌██▒▒▓▓▄ ▄██▒░██░▒▓█  ▄ ▓██▒  ▐▌██▒░ ▓██▓ ░  "
+	@echo -e ${CL_GRN}" ▓█   ▓██▒▒██░   ▓██░▒ ▓███▀ ░░██░░▒████▒▒██░   ▓██░  ▒██▒ ░  "
+	@echo -e ${CL_GRN}" ▒▒   ▓▒█░░ ▒░   ▒ ▒ ░ ░▒ ▒  ░░▓  ░░ ▒░ ░░ ▒░   ▒ ▒   ▒ ░░    "
+	@echo -e ${CL_GRN}"  ▒   ▒▒ ░░ ░░   ░ ▒░  ░  ▒    ▒ ░ ░ ░  ░░ ░░   ░ ▒░    ░     "
+	@echo -e ${CL_GRN}"  ░   ▒      ░   ░ ░ ░         ▒ ░   ░      ░   ░ ░   ░       "
+	@echo -e ${CL_GRN}"      ░  ░         ░ ░ ░       ░     ░  ░         ░           "
+	@echo -e ${CL_GRN}"                     ░					 "
+	@echo -e ""
+	@echo -e "Package Complete: $(ANCIENT_TARGET_PACKAGE)" >&2
+	@echo -e "md5: `cat $(ANCIENT_TARGET_PACKAGE).md5sum | cut -d ' ' -f 1`"
+	@echo -e "size:`ls -lah $(ANCIENT_TARGET_PACKAGE) | cut -d ' ' -f 5`"
+	@echo -e ""
