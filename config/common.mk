@@ -152,4 +152,7 @@ include vendor/pixelstyle/config.mk
 # Fonts
 include vendor/ancient/prebuilt/common/fonts/fonts.mk
 
+# Customization
+include vendor/google/customization/config.mk
+
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
