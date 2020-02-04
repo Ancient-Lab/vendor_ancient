@@ -17,5 +17,5 @@
 <config>
     <allow-in-power-save package="com.android.deskclock" />
     <allow-in-power-save package="com.google.android.deskclock" />
-    <hidden-api-whitelisted-app package="org.mokee.longshot" />
+    <hidden-api-whitelisted-app package="com.android.screenshot" />
 </config>
