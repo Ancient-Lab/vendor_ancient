@@ -34,8 +34,7 @@ endif
 PRODUCT_COPY_FILES += \
     vendor/ancient/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
     vendor/ancient/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
-    vendor/ancient/prebuilt/common/bin/50-base.sh:system/addon.d/50-base.sh \
-    vendor/ancient/prebuilt/common/bin/blacklist:system/addon.d/blacklist
+    vendor/ancient/prebuilt/common/bin/50-base.sh:system/addon.d/50-base.sh
 
 ifneq ($(AB_OTA_PARTITIONS),)
 PRODUCT_COPY_FILES += \
