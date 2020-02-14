@@ -30,10 +30,6 @@ else
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=1
 endif
 
-# Ambient Play
-#PRODUCT_PACKAGES += \
-#    AmbientPlayHistoryProvider
-
 # Backup Tool
 PRODUCT_COPY_FILES += \
     vendor/ancient/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
@@ -92,22 +88,9 @@ PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
 # leave less information available via JDWP.
 PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
 
-# Optional packages
-#PRODUCT_PACKAGES += \
-#    ThemePicker
-
 # Charger
 PRODUCT_PACKAGES += \
     charger_res_images
-
-# Filesystems tools
-PRODUCT_PACKAGES += \
-    fsck.exfat \
-    fsck.ntfs \
-    mke2fs \
-    mkfs.exfat \
-    mkfs.ntfs \
-    mount.ntfs
 
 # Storage manager
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
@@ -124,10 +107,6 @@ DEVICE_PACKAGE_OVERLAYS += vendor/ancient/overlay/common
 PRODUCT_PACKAGES += \
     PixelSetupWizardOverlay \
     PixelSetupWizardAodOverlay
-
-# Sqlite
-PRODUCT_PACKAGES += \
-    sqlite3
 
 # Themed bootanimation
 TARGET_MISC_BLOCK_OFFSET ?= 0
@@ -154,5 +133,8 @@ include vendor/ancient/prebuilt/common/fonts/fonts.mk
 
 # Customization
 include vendor/google/customization/config.mk
+
+# Packages
+include vendor/ancient/config/packages.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
