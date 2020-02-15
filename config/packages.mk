@@ -13,4 +13,5 @@ PRODUCT_PACKAGES += \
 
 # Packages
 PRODUCT_PACKAGES += \
-    Recorder
+    Recorder \
+    CustomDoze
