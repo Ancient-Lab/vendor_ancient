@@ -13,7 +13,6 @@ PRODUCT_PACKAGES += \
 
 # Packages
 PRODUCT_PACKAGES += \
-    Recorder \
     CustomDoze \
     Longshot \
     OmniStyle
