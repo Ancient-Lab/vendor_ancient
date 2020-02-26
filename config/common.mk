@@ -123,17 +123,21 @@ include vendor/ancient/config/branding.mk
 # Overlays
 include vendor/overlays/config.mk
 
+# Apps
+ifeq ($(ANCIENT_NOGAPPS), true)
+include vendor/ancient/config/basicapps.mk
+else
 # Gapps
 include vendor/gapps/config.mk
+# Customization
+include vendor/google/customization/config.mk
+endif
 
 # Pixelstyle
 include vendor/pixelstyle/config.mk
 
 # Fonts
 include vendor/ancient/prebuilt/common/fonts/fonts.mk
-
-# Customization
-include vendor/google/customization/config.mk
 
 # Packages
 include vendor/ancient/config/packages.mk
