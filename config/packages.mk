@@ -15,4 +15,5 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     CustomDoze \
     Longshot \
-    OmniStyle
+    OmniStyle \
+    Launcher3QuickStep
