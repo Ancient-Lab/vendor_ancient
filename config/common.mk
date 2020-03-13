@@ -50,7 +50,8 @@ PRODUCT_COPY_FILES += \
     vendor/ancient/config/permissions/privapp-permissions-product-ancient.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-product-ancient.xml \
     vendor/ancient/config/permissions/privapp-permissions-fm.xml:system/etc/permissions/privapp-permissions-fm.xml \
     vendor/ancient/config/permissions/privapp-permissions-snap.xml:system/etc/permissions/privapp-permissions-snap.xml \
-    vendor/ancient/config/permissions/privapp-permissions-camera2.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-camera2.xml
+    vendor/ancient/config/permissions/privapp-permissions-camera2.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-camera2.xml \
+    vendor/ancient/config/permissions/privapp-permissions-elgoog.xml:system/etc/permissions/privapp-permissions-elgoog.xml
 
 # Copy all ancient-OS-specific init rc files
 $(foreach f,$(wildcard vendor/ancient/prebuilt/common/etc/init/*.rc),\
