@@ -43,5 +43,4 @@ ANCIENT_PROPERTIES := \
     ro.ancient.version=$(ANCIENT_VERSION) \
     ro.ancient.build_date=$(ANCIENT_BUILD_DATE) \
     ro.ancient.build_type=$(ANCIENT_BUILD_TYPE) \
-    ro.ancient.release_type=$(ANCIENT_BUILD_TYPE) \
-    ro.ancient=$(ANCIENT)
+    ro.ancient.release_type=$(ANCIENT_BUILD_TYPE)
