@@ -18,7 +18,7 @@ ANCIENT_VERSION_CUSTOM := CIVILIZATION-v3.0
 BUILD_VERSION := v3.0
 
 ifeq ($(ANCIENT_OFFICIAL), true)
-   LIST = $(shell curl -s https://raw.githubusercontent.com/Ancient-Lab/official/ten/ancient.devices)
+   LIST = $(shell cat vendor/ancient/ancient.devices)
    FOUND_DEVICE =  $(filter $(CURRENT_DEVICE), $(LIST))
     ifeq ($(FOUND_DEVICE),$(CURRENT_DEVICE))
       IS_OFFICIAL=true
