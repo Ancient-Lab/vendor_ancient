@@ -17,4 +17,5 @@ PRODUCT_PACKAGES += \
     Longshot \
     OmniStyle \
     Launcher3QuickStep \
-    AncientWallpaperZone
+    AncientWallpaperZone \
+    ThemePicker
