@@ -18,4 +18,5 @@ PRODUCT_PACKAGES += \
     Launcher3QuickStep \
     AncientWallpaperZone \
     ThemePicker \
-    TouchGestures
+    TouchGestures \
+    StitchImage
