@@ -4,7 +4,8 @@ PRODUCT_PACKAGES += \
     Gallery2 \
     Contacts \
     Dialer \
-    LatinIME
+    LatinIME \
+    ViaBrowser
 
 # Extra packages
 PRODUCT_PACKAGES += \
