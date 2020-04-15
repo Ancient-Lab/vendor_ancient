@@ -25,6 +25,7 @@ ifeq ($(ANCIENT_OFFICIAL), true)
       ANCIENT_BUILD_TYPE := PRIMEVAL
 
 # OTA
+ifeq ($(ANCIENT_NOGAPPS), false)
 include vendor/ancient/config/ota.mk
 
     endif
@@ -32,6 +33,7 @@ include vendor/ancient/config/ota.mk
        ANCIENT_BUILD_TYPE := PREHISTORIC
        $(error Device is not official "$(FOUND)")
     endif
+endif
 endif
 
 TARGET_PRODUCT_SHORT := $(subst ancient_,,$(ANCIENT_BUILD))
