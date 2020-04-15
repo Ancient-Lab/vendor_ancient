@@ -14,7 +14,6 @@ PRODUCT_PACKAGES += \
 # Packages
 PRODUCT_PACKAGES += \
     CustomDoze \
-    Longshot \
     OmniStyle \
     Launcher3QuickStep \
     AncientWallpaperZone \
