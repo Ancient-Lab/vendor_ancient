@@ -146,9 +146,10 @@ include vendor/ancient/config/basicapps.mk
 else
 # Gapps
 include vendor/gapps/config.mk
+endif
+
 # Customization
 include vendor/google/customization/config.mk
-endif
 
 # Pixelstyle
 include vendor/pixelstyle/config.mk
