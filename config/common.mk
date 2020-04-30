@@ -149,7 +149,7 @@ include vendor/gapps/config.mk
 endif
 
 # Customization
-include vendor/google/customization/config.mk
+include vendor/google-customization/config.mk
 
 # Pixelstyle
 include vendor/pixelstyle/config.mk
