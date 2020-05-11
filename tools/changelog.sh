@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Exports
+dir=$ANDROID_BUILD_TOP
+out=$dir/out/target/product
 
 export Changelog=Changelog.txt
 
@@ -9,27 +13,45 @@ fi
 
 touch $Changelog
 
-echo "Generating changelog..."
+# Print something to build output
+echo ${bldppl}"Generating changelog..."${txtrst}
 
-for i in $(seq 14);
-do
-export After_Date=`date --date="$i days ago" +%Y/%m/%d`
-k=$(expr $i - 1)
-	export Until_Date=`date --date="$k days ago" +%Y/%m/%d`
+# Use 'export USER_BUILD_NO_CHANGELOG=1' before build/envsetup.sh to skip changelog
+if [ $USER_BUILD_NO_CHANGELOG ]&&[ "$USER_BUILD_NO_CHANGELOG" -eq 1 ]; then
+  echo "Skipped because variable 'USER_BUILD_NO_CHANGELOG' was set to 1" | tee $Changelog;
+else
+  for i in $(seq 10);
+  do
+  export After_Date=`date --date="$i days ago" +%m-%d-%Y`
+  k=$(expr $i - 1)
+    export Until_Date=`date --date="$k days ago" +%m-%d-%Y`
 
-	# Line with after --- until was too long for a small ListView
-	echo '=======================' >> $Changelog;
-	echo  "     "$Until_Date       >> $Changelog;
-	echo '=======================' >> $Changelog;
-	echo >> $Changelog;
+    # Line with after --- until was too long for a small ListView
+    echo '====================' >> $Changelog;
+    echo  "     "$Until_Date       >> $Changelog;
+    echo '===================='	>> $Changelog;
+    echo >> $Changelog;
 
-	# Cycle through every repo to find commits between 2 dates
-	repo forall -pc 'git log --oneline --after=$After_Date --until=$Until_Date' >> $Changelog
-	echo >> $Changelog;
-done
+    # Cycle through every repo to find commits between 2 dates
+    CURRENT_PATH="$(realpath `pwd`)"
 
-sed -i 's/project/   */g' $Changelog
+    repo forall -c "GIT_LOG=\`git log --oneline --after=$After_Date --until=$Until_Date\` ; if [ ! -z \"\$GIT_LOG\" ]; then printf  '\n   * '; realpath \`pwd\` | sed 's|^$CURRENT_PATH/||' ; echo \"\$GIT_LOG\"; fi" >> $Changelog
+    echo >> $Changelog;
+  done
 
+  sed -i 's/project/   */g' $Changelog
+fi
+
+if [ -e $out/*/$Changelog ]
+then
+rm $out/*/$Changelog
+fi
+if [ -e $out/*/system/etc/$Changelog ]
+then
+rm $out/*/system/etc/$Changelog
+fi
 cp $Changelog $OUT/system/etc/
 cp $Changelog $OUT/
-rm -rf $Changelog
+rm $Changelog
+
+exit 0
