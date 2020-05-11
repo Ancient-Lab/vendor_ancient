@@ -31,10 +31,10 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=1
 endif
 
 # Backup Tool
-PRODUCT_COPY_FILES += \
-    vendor/ancient/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/ancient/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
-    vendor/ancient/prebuilt/common/bin/50-base.sh:system/addon.d/50-base.sh
+#PRODUCT_COPY_FILES += \
+#    vendor/ancient/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+#    vendor/ancient/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
+#    vendor/ancient/prebuilt/common/bin/50-base.sh:system/addon.d/50-base.sh
 
 # OTA
 ifneq ($(TARGET_BUILD_VARIANT),user)
@@ -42,12 +42,12 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.ota.allow_downgrade=true
 endif
 
-ifneq ($(AB_OTA_PARTITIONS),)
-PRODUCT_COPY_FILES += \
-    vendor/ancient/prebuilt/common/bin/backuptool_ab.sh:system/bin/backuptool_ab.sh \
-    vendor/ancient/prebuilt/common/bin/backuptool_ab.functions:system/bin/backuptool_ab.functions \
-    vendor/ancient/prebuilt/common/bin/backuptool_postinstall.sh:system/bin/backuptool_postinstall.sh
-endif
+#ifneq ($(AB_OTA_PARTITIONS),)
+#PRODUCT_COPY_FILES += \
+#    vendor/ancient/prebuilt/common/bin/backuptool_ab.sh:system/bin/backuptool_ab.sh \
+#    vendor/ancient/prebuilt/common/bin/backuptool_ab.functions:system/bin/backuptool_ab.functions \
+#    vendor/ancient/prebuilt/common/bin/backuptool_postinstall.sh:system/bin/backuptool_postinstall.sh
+#endif
 
 # Some permissions
 PRODUCT_COPY_FILES += \
