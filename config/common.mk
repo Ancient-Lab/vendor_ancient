@@ -159,4 +159,6 @@ include vendor/ancient/config/packages.mk
 # Plugins
 include packages/apps/Plugins/plugins.mk
 
+$(call inherit-product-if-exists, external/motorola/faceunlock/config.mk)
+
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
