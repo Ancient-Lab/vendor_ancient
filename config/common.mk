@@ -147,6 +147,9 @@ include vendor/google-customization/config.mk
 # Pixelstyle
 include vendor/pixelstyle/config.mk
 
+# Prebuilts
+include vendor/prebuilts/config.mk
+
 # Fonts
 include vendor/ancient/prebuilt/common/fonts/fonts.mk
 
