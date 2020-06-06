@@ -16,7 +16,6 @@ PRODUCT_PACKAGES += \
     CustomDoze \
     OmniStyle \
     Launcher3QuickStep \
-    AncientWallpaperZone \
     ThemePicker \
     TouchGestures \
     StitchImage
