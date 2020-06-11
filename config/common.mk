@@ -58,6 +58,10 @@ PRODUCT_COPY_FILES += \
     vendor/ancient/config/permissions/privapp-permissions-product-google-ancient.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-product-google-ancient.xml \
     vendor/ancient/config/permissions/privapp-permissions-elgoog.xml:system/etc/permissions/privapp-permissions-elgoog.xml
 
+# Live Display
+PRODUCT_COPY_FILES += \
+    vendor/ancient/config/permissions/privapp-permissions-livedisplay.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-livedisplay.xml
+
 # Copy all ancient-OS-specific init rc files
 $(foreach f,$(wildcard vendor/ancient/prebuilt/common/etc/init/*.rc),\
     $(eval PRODUCT_COPY_FILES += $(f):system/etc/init/$(notdir $f)))
