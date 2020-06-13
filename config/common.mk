@@ -156,4 +156,7 @@ include vendor/ancient/prebuilt/common/fonts/fonts.mk
 # Packages
 include vendor/ancient/config/packages.mk
 
+# Plugins
+include packages/apps/Plugins/plugins.mk
+
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
