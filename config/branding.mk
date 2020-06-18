@@ -1,5 +1,5 @@
 ifndef ANCIENT_BUILD_TYPE
-    ANCIENT_BUILD_TYPE := PREHISTORIC
+    ANCIENT_BUILD_TYPE := desufied
 endif
 
 # Set all versions
@@ -13,8 +13,8 @@ ANCIENT_BUILD_DATE_UTC := $(shell date -d '$(ANCIENT_DATE_YEAR)-$(ANCIENT_DATE_M
 ANCIENT_BUILD_DATE := $(ANCIENT_DATE_YEAR)$(ANCIENT_DATE_MONTH)$(ANCIENT_DATE_DAY)-$(ANCIENT_DATE_HOUR)$(ANCIENT_DATE_MINUTE)
 
 ANCIENT_PLATFORM_VERSION := 10.0
-ANCIENT_BASE_EDITION := CIVILIZATION
-ANCIENT_VERSION_CUSTOM := CIVILIZATION-v3.7
+ANCIENT_BASE_EDITION := weeaboify
+ANCIENT_VERSION_CUSTOM := weeabo.v3.7
 BUILD_VERSION := v3.7
 
 ifeq ($(ANCIENT_OFFICIAL), true)
@@ -22,16 +22,16 @@ ifeq ($(ANCIENT_OFFICIAL), true)
    FOUND_DEVICE =  $(filter $(CURRENT_DEVICE), $(LIST))
     ifeq ($(FOUND_DEVICE),$(CURRENT_DEVICE))
       IS_OFFICIAL=true
-      ANCIENT_BUILD_TYPE := PRIMEVAL
+      ANCIENT_BUILD_TYPE := Koshiki
 
 # OTA
-ifneq (,$(filter $(TARGET_GAPPS_ARCH), arm arm64))
-include vendor/ancient/config/ota.mk
-endif
+# ifneq (,$(filter $(TARGET_GAPPS_ARCH), arm arm64))
+# include vendor/ancient/config/ota.mk
+# endif
 
     endif
     ifneq ($(IS_OFFICIAL), true)
-       ANCIENT_BUILD_TYPE := PREHISTORIC
+       ANCIENT_BUILD_TYPE := desufied
        $(error Device is not official "$(FOUND)")
     endif
 endif
