@@ -25,7 +25,7 @@ ifeq ($(ANCIENT_OFFICIAL), true)
       ANCIENT_BUILD_TYPE := PRIMEVAL
 
 # OTA
-ifneq (,$(filter $(TARGET_GAPPS_ARCH), arm arm64))
+ifeq ($(FORCE_OTA), true)
 include vendor/ancient/config/ota.mk
 endif
 
