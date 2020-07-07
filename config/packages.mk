@@ -20,5 +20,4 @@ PRODUCT_PACKAGES += \
     TouchGestures \
     StitchImage \
     OmniJaws \
-    WeatherIcons \
-    Nekopoi
+    WeatherIcons
