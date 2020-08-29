@@ -21,3 +21,8 @@ PRODUCT_PACKAGES += \
     StitchImage \
     OmniJaws \
     WeatherIcons
+
+ifneq ($(ANCIENT_NOGAPPS), true)
+PRODUCT_PACKAGES += \
+    PixelLiveWallpaperPrebuilt
+endif
